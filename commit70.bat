@@ -2,33 +2,34 @@
 setlocal enabledelayedexpansion
 
 set YEAR=2026
-set MONTH=02
+set COUNT=41
 
-set COUNT=1
-set DAY=8
+rem Start from March 1
+set MONTH=03
+set DAY=1
 
 :loop
 
 if !COUNT! GTR 70 goto end
 
-rem skip some days (gaps)
-if !DAY!==12 set /a DAY+=1
-if !DAY!==18 set /a DAY+=1
-if !DAY!==25 set /a DAY+=1
-if !DAY!==32 set /a DAY+=1
-if !DAY!==40 set /a DAY+=1
-if !DAY!==50 set /a DAY+=1
-
+rem format day
 set DD=!DAY!
 if !DD! LSS 10 set DD=0!DD!
 
-echo update !COUNT! >> progress.txt
+echo fix !COUNT! >> progress.txt
 
 git add .
-git commit --date="%YEAR%-%MONTH%-!DD!T12:00:00" -m "Day !COUNT!"
+git commit --date="%YEAR%-%MONTH%-!DD!T13:00:00" -m "Day !COUNT!"
 
 set /a COUNT+=1
 set /a DAY+=1
+
+rem handle month change
+if !DAY! GTR 31 (
+    set DAY=1
+    set /a MONTH+=1
+    if !MONTH! LSS 10 set MONTH=0!MONTH!
+)
 
 goto loop
 
